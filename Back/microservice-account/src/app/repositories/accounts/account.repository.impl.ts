@@ -24,9 +24,14 @@ export class AccountRepositoryImpl implements AccountRepository {
 
   async updateAccount(accountId: string, updatedData: Partial<Account>): Promise<Account | null> {
     const account = await Account.findByPk(accountId);
-    if (!account) return null;
-
+    if (!account) {
+      return null;
+    }
+  
+    // 📌 Asegurar que el balance se actualiza correctamente
     await account.update(updatedData);
+    await account.save();
+  
     return account;
   }
 

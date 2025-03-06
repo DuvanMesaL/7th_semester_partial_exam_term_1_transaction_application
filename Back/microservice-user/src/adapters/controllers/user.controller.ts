@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Request, Response } from "express";
 import { CreateUserUseCase } from "../../app/use-cases/create-user.use-case";
 import { GetUserUseCase } from "../../app/use-cases/get-user.use-case";
@@ -16,7 +17,13 @@ class UserController {
   async createUser(req: Request, res: Response): Promise<void> {
     try {
       const user = await createUserUseCase.execute(req.body);
-      res.status(201).json(user);
+
+      await axios.post("http://localhost:3003/mail/send-welcome", {
+        to: user.email,
+        payload: { name: user.name }
+      });
+  
+      res.status(201).json({mensaje: "Usuario registrado exitosamete", data:user});
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

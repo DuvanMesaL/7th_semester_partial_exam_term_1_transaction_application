@@ -5,6 +5,6 @@ import { TransferController } from "../controllers/transfer.controller";
 const router = Router();
 
 // 📌 Endpoint para transferencias de saldo
-router.post("/", authMiddleware, (req, res) => TransferController.transfer(req, res));
+router.post("/", authMiddleware, (req, res) => TransferController.transferMoney(req, res));
 
 export default router;

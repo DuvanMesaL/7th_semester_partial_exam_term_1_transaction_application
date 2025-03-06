@@ -13,18 +13,25 @@ export class CreateTransactionUseCase {
     if (!account) {
       throw new Error("La cuenta no existe.");
     }
-
-    if (transactionData.type === "outcome" && account.balance < transactionData.amount) {
+  
+    // 📌 Asegurar que balance y amount sean números
+    const currentBalance = parseFloat(account.balance.toString()); 
+    const transactionAmount = parseFloat(transactionData.amount.toString()); 
+  
+    if (transactionData.type === "outcome" && currentBalance < transactionAmount) {
       throw new Error("Fondos insuficientes.");
     }
-
+  
     const newBalance =
       transactionData.type === "income"
-        ? account.balance + transactionData.amount
-        : account.balance - transactionData.amount;
-
-    await this.accountRepository.updateAccount(accountId, { balance: newBalance });
-
+        ? currentBalance + transactionAmount
+        : currentBalance - transactionAmount;
+  
+    // 📌 Convertir `toFixed(2)` de vuelta a número para evitar errores de tipo
+    await this.accountRepository.updateAccount(accountId, { balance: parseFloat(newBalance.toFixed(2)) });
+  
     return await this.transactionRepository.createTransaction(accountId, transactionData);
   }
+  
+  
 }
