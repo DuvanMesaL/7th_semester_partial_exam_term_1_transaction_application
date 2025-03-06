@@ -4,8 +4,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-console.log("🔍 SECRET_KEY en microservice-account:", process.env.SECRET_KEY);
-
 export const authMiddleware = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
 
@@ -16,11 +14,9 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
 
   const token = authHeader.split(" ")[1];
 
-  console.log("🔍 Token recibido:", token);
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY!);
-    console.log("✅ Token decodificado:", decoded);
 
     (req as any).user = decoded;
     next();

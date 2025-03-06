@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { MailService } from "../../app/services/mail.service";
 import { sendEmail } from "../../infrastructure/utils/email-sender";
-import { logAction } from "../../infrastructure/utils/logger";
+import { logEvent } from "../../infrastructure/utils/logEvent";
 
 const mailService = new MailService();
 
@@ -9,6 +9,7 @@ const mailService = new MailService();
  * 📌 Endpoint para enviar un correo de bienvenida
  */
 export const sendWelcomeEmail = async (req: Request, res: Response) => {
+  await logEvent("mailing", "INFO", `Intentando enviar correo de bienvenida a ${req.body.to}`);
   try {
     const { to, payload } = req.body;
     const subject = "Bienvenido";
@@ -20,11 +21,12 @@ export const sendWelcomeEmail = async (req: Request, res: Response) => {
     // Guardar en MongoDB
     await mailService.saveMail(to, subject, template, payload);
 
-    // Registrar log
-    await logAction("Mailing", `Correo de bienvenida enviado a ${to}`);
+    // Registrar log de éxito
+    await logEvent("mailing", "INFO", `Correo de bienvenida enviado a ${to}`);
 
     res.status(200).json({ message: "Correo de bienvenida enviado", response: emailResponse });
   } catch (error: unknown) {
+    await logEvent("mailing", "ERROR", `Error enviando correo de bienvenida: ${(error as Error).message}`);
     res.status(500).json({ message: "Error enviando el correo de bienvenida", error: (error as Error).message });
   }
 };
@@ -33,6 +35,7 @@ export const sendWelcomeEmail = async (req: Request, res: Response) => {
  * 📌 Endpoint para enviar un correo de confirmación de transacción
  */
 export const sendTransactionEmail = async (req: Request, res: Response) => {
+  await logEvent("mailing", "INFO", `Intentando enviar correo de transacción a ${req.body.to}`);
   try {
     const { to, payload } = req.body;
     const subject = "Confirmación de Transacción";
@@ -44,11 +47,12 @@ export const sendTransactionEmail = async (req: Request, res: Response) => {
     // Guardar en MongoDB
     await mailService.saveMail(to, subject, template, payload);
 
-    // Registrar log
-    await logAction("Mailing", `Correo de transacción enviado a ${to}`);
+    // Registrar log de éxito
+    await logEvent("mailing", "INFO", `Correo de transacción enviado a ${to}`);
 
     res.status(200).json({ message: "Correo de transacción enviado", response: emailResponse });
   } catch (error: unknown) {
+    await logEvent("mailing", "ERROR", `Error enviando correo de transacción: ${(error as Error).message}`);
     res.status(500).json({ message: "Error enviando el correo de transacción", error: (error as Error).message });
   }
 };
@@ -57,6 +61,7 @@ export const sendTransactionEmail = async (req: Request, res: Response) => {
  * 📌 Endpoint para enviar un correo de confirmación de transferencia
  */
 export const sendTransferEmail = async (req: Request, res: Response) => {
+  await logEvent("mailing", "INFO", `Intentando enviar correos de transferencia a ${req.body.senderEmail} y ${req.body.receiverEmail}`);
   try {
     const { senderEmail, receiverEmail, payload } = req.body;
     const subjectSender = "Confirmación de Transferencia";
@@ -78,8 +83,9 @@ export const sendTransferEmail = async (req: Request, res: Response) => {
     await mailService.saveMail(senderEmail, subjectSender, templateSender, payloadSender);
     await mailService.saveMail(receiverEmail, subjectReceiver, templateReceiver, payloadReceiver);
 
-    // Registrar logs
-    await logAction("Mailing", `Correo de transferencia enviado a ${senderEmail} y ${receiverEmail}`);
+    // Registrar logs de éxito
+    await logEvent("mailing", "INFO", `Correo de transferencia enviado a ${senderEmail}`);
+    await logEvent("mailing", "INFO", `Correo de transferencia enviado a ${receiverEmail}`);
 
     res.status(200).json({
       message: "Correos de transferencia enviados",
@@ -87,6 +93,7 @@ export const sendTransferEmail = async (req: Request, res: Response) => {
       responseReceiver: emailResponseReceiver
     });
   } catch (error: unknown) {
+    await logEvent("mailing", "ERROR", `Error enviando correo de transferencia: ${(error as Error).message}`);
     res.status(500).json({ message: "Error enviando correo de transferencia", error: (error as Error).message });
   }
 };
