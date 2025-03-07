@@ -51,7 +51,7 @@ User.init(
     lastname: { type: DataTypes.STRING, allowNull: false },
     age: { type: DataTypes.INTEGER, allowNull: false },
     email: { type: DataTypes.STRING, allowNull: false, unique: true },
-    phone: { type: DataTypes.STRING, allowNull: false },
+    phone: { type: DataTypes.STRING, allowNull: false, unique: true },
     gender: { type: DataTypes.ENUM("M", "F"), allowNull: false },
     password: { type: DataTypes.STRING, allowNull: false },
     documentType: { type: DataTypes.STRING, allowNull: false },

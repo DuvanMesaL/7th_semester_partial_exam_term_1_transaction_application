@@ -11,7 +11,7 @@ module.exports = {
       lastname: { type: Sequelize.STRING, allowNull: false },
       age: { type: Sequelize.INTEGER, allowNull: false },
       email: { type: Sequelize.STRING, allowNull: false, unique: true },
-      phone: { type: Sequelize.STRING, allowNull: false },
+      phone: { type: Sequelize.STRING, allowNull: false, unique: true },
       gender: { type: Sequelize.ENUM("M", "F"), allowNull: false },
       password: { type: Sequelize.STRING, allowNull: false },
       documentType: { type: Sequelize.STRING, allowNull: false },

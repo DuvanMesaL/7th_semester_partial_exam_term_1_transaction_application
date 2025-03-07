@@ -15,6 +15,14 @@ export class UserRepositoryImpl implements UserRepository {
     return await User.findOne({ where: { email } });
   }
 
+  async getUserByDocument(documentNumber: string): Promise<User | null> {
+    return await User.findOne({ where: { documentNumber } });
+  }
+
+  async getUserByPhone(phone: string): Promise<User | null> {
+    return await User.findOne({ where: { phone } });
+  }
+
   async updateUser(id: string, updatedData: Partial<UserCreationAttributes>): Promise<User | null> {
     const user = await User.findByPk(id);
     if (!user) return null;
