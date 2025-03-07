@@ -10,12 +10,10 @@ export class UpdateUserUseCase {
   constructor(private userRepository: UserRepository) {}
 
   async execute(id: string, updatedData: Partial<UserCreationAttributes>) {
-    // No permitir cambiar `documentNumber` ni `documentType`
     if (updatedData.documentNumber || updatedData.documentType) {
       throw new UnauthorizedActionError("No puedes cambiar el número ni el tipo de documento.");
     }
 
-    // Si se cambia el email, verificar que no esté en uso
     if (updatedData.email) {
       const existingUser = await this.userRepository.getUserByEmail(updatedData.email);
       if (existingUser) {
@@ -23,7 +21,6 @@ export class UpdateUserUseCase {
       }
     }
 
-    // Si se cambia el número de teléfono, verificar que no esté en uso
     if (updatedData.phone) {
       const existingUser = await this.userRepository.getUserByPhone(updatedData.phone);
       if (existingUser) {

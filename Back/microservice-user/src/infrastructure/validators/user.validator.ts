@@ -17,7 +17,7 @@ export const validateGetUserByEmail = [
 ];
 
 export const validateUpdateUser = [
-  param("id").isMongoId().withMessage("El ID del usuario no es válido."),
+  param("id").isUUID().withMessage("El ID del usuario no es válido."),
   body("email").optional().isEmail().withMessage("El email no es válido."),
   body("password")
     .optional()
@@ -27,5 +27,5 @@ export const validateUpdateUser = [
 ];
 
 export const validateDeleteUser = [
-  param("id").isMongoId().withMessage("El ID del usuario no es válido."),
+  param("id").isUUID().withMessage("El ID del usuario no es válido."),
 ];

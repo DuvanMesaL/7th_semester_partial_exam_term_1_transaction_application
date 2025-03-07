@@ -3,14 +3,28 @@ import { logEvent } from "./logEvent";
 
 /**
  * Función para enviar emails a través del microservicio de mailing.
- * @param to - Dirección de correo del destinatario.
+ * @param senderEmail - Dirección de correo del remitente (para transferencias).
+ * @param receiverEmail - Dirección de correo del destinatario.
  * @param type - Tipo de correo a enviar ("welcome", "transaction", "transfer").
  * @param payload - Contenido del email en formato JSON.
  */
-export const sendEmail = async (to: string, type: "welcome" | "transaction" | "transfer", payload: any): Promise<void> => {
+export const sendEmail = async (
+  senderEmail: string | null,
+  receiverEmail: string,
+  type: "welcome" | "transaction" | "transfer",
+  payload: any
+): Promise<void> => {
   try {
-    // 📌 Mapear la ruta correcta según el tipo de email
+    console.log("📤 Enviando email con los siguientes datos:");
+    console.log({
+      senderEmail,
+      receiverEmail,
+      type,
+      payload,
+    });
+
     let emailRoute = "";
+
     switch (type) {
       case "welcome":
         emailRoute = "/send-welcome";
@@ -25,11 +39,16 @@ export const sendEmail = async (to: string, type: "welcome" | "transaction" | "t
         throw new Error("Tipo de email inválido.");
     }
 
-    // 📌 Enviar el email al microservicio de mailing con la ruta correcta
-    await logEvent("email", "INFO", `Enviando email a: ${to} - Tipo: ${type}`);
-    await axios.post(`http://localhost:3003/mail/${emailRoute}`, { to, payload });
-    await logEvent("email", "INFO", `Email enviado correctamente a: ${to}`);
+    const data =
+      type === "transfer"
+        ? { senderEmail, receiverEmail, payload }
+        : { to: receiverEmail, payload };
+
+    const response = await axios.post(`http://localhost:3003/mail${emailRoute}`, data);
+
+    console.log("✅ Petición enviada con éxito a mailing:", response.data);
   } catch (error: any) {
-    await logEvent("email", "ERROR", `Error al enviar email a ${to}: ${error.message}`);
+    console.error("❌ Error enviando email:", error.response?.data || error.message);
+    await logEvent("email", "ERROR", `Error al enviar email a ${receiverEmail}: ${error.message}`);
   }
 };

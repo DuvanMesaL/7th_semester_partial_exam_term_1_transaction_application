@@ -78,13 +78,13 @@ export class TransferController {
 
       await logEvent("transfer", "INFO", `Transferencia realizada exitosamente: ${amount} de ${senderAccountId} a ${receiverAccountId}`);
 
-      await sendEmail(senderEmail, "transfer", {
+      await sendEmail(senderEmail, receiverEmail, "transfer", {
         sender: senderUserResponse.data.name,
         receiver: receiverUserResponse.data.name,
         amount,
         date: new Date().toISOString(),
       });
-
+      
       res.status(201).json({ message: "Transferencia realizada", data: transfer });
 
     } catch (error: any) {

@@ -11,6 +11,10 @@ export class UserRepositoryImpl implements UserRepository {
     return await User.findByPk(id);
   }
 
+  async getAllUsers(): Promise<User[]> {
+    return await User.findAll();
+  }
+
   async getUserByEmail(email: string): Promise<User | null> {
     return await User.findOne({ where: { email } });
   }

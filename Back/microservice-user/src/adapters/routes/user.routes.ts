@@ -12,11 +12,10 @@ import {
 
 const router = Router();
 
-// 📌 Rutas públicas (No requieren autenticación)
-router.post("/", validateCreateUser, validateRequest, UserController.createUser); // Crear usuario
-router.post("/login", AuthController.login); // ✅ Login de usuario
+router.post("/", validateCreateUser, validateRequest, UserController.createUser);
+router.get("/", authMiddleware, UserController.getAllUsers);
+router.post("/login", AuthController.login);
 
-// 📌 Rutas protegidas (Requieren autenticación con JWT)
 router.get("/:id", authMiddleware, validateGetUserById, validateRequest, UserController.getUserById);
 router.put("/:id", authMiddleware, validateUpdateUser, validateRequest, UserController.updateUser);
 router.delete("/:id", authMiddleware, validateDeleteUser, validateRequest, UserController.deleteUser);

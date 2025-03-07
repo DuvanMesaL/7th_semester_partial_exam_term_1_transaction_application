@@ -9,7 +9,18 @@ export class MailService {
   }
 
   async saveMail(to: string, subject: string, template: string, payload: object) {
+    console.log("📩 Intentando guardar en MongoDB...");
+    console.log("📨 Datos a guardar:", { to, subject, template, payload });
+
     const mail: IMail = { to, subject, template, payload };
-    return await this.mailRepository.saveMail(mail);
+    const savedMail = await this.mailRepository.saveMail(mail);
+
+    if (savedMail) {
+      console.log("✅ Correo guardado en la base de datos:", savedMail);
+    } else {
+      console.error("❌ No se pudo guardar el correo en la base de datos.");
+    }
+
+    return savedMail;
   }
 }

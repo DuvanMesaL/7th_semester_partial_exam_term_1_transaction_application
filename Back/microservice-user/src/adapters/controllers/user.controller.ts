@@ -7,9 +7,10 @@ import { GetUserUseCase } from "../../app/use-cases/get-user.use-case";
 import { UpdateUserUseCase } from "../../app/use-cases/update-user.use.case";
 import { DeleteUserUseCase } from "../../app/use-cases/delete-user.use-case";
 import { UserRepositoryImpl } from "../../app/repositories/user.repository.impl";
+import { GetAllUsersUseCase } from "../../app/use-cases/get-all-user.use-case";
 
-// 📌 Instanciamos el repositorio y los casos de uso
 const userRepository = new UserRepositoryImpl();
+const getAllUsersUseCase = new GetAllUsersUseCase(userRepository);
 const createUserUseCase = new CreateUserUseCase(userRepository);
 const getUserUseCase = new GetUserUseCase(userRepository);
 const updateUserUseCase = new UpdateUserUseCase(userRepository);
@@ -29,7 +30,6 @@ class UserController {
     try {
       const user = await createUserUseCase.execute(req.body);
 
-      // Enviar correo de bienvenida con `sendEmail.ts`
       await sendEmail(user.email, "welcome", { name: user.name });
 
       await logEvent("user", "INFO", `Usuario ${user.email} creado correctamente`);
@@ -37,6 +37,16 @@ class UserController {
       res.status(201).json({ mensaje: "Usuario registrado exitosamente", data: user });
     } catch (error: any) {
       await handleError(res, "user", "crear usuario", error);
+    }
+  }
+
+  async getAllUsers(req: Request, res: Response): Promise<void> {
+    try {
+      const users = await getAllUsersUseCase.execute();
+      await logEvent("user", "INFO", "Todos los usuarios consultados correctamente");
+      res.json(users);
+    } catch (error: any) {
+      await handleError(res, "user", "obtener todos los usuarios", error);
     }
   }
 
