@@ -6,7 +6,7 @@ export class CreateAccountUseCase {
 
   async execute(userId: string, accountData: any) {
     // Validar datos obligatorios
-    if (!userId || !accountData.account_type || !accountData.currency) {
+    if (!userId) {
       throw new MissingFieldsError("user_id, account_type y currency son obligatorios.");
     }
 

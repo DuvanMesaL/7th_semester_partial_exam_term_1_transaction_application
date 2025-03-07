@@ -27,7 +27,7 @@ export const sendEmail = async (to: string, type: "welcome" | "transaction" | "t
 
     // 📌 Enviar el email al microservicio de mailing con la ruta correcta
     await logEvent("email", "INFO", `Enviando email a: ${to} - Tipo: ${type}`);
-    await axios.post(`http://localhost:3003${emailRoute}`, { to, payload });
+    await axios.post(`http://localhost:3003/mail/${emailRoute}`, { to, payload });
     await logEvent("email", "INFO", `Email enviado correctamente a: ${to}`);
   } catch (error: any) {
     await logEvent("email", "ERROR", `Error al enviar email a ${to}: ${error.message}`);

@@ -9,24 +9,22 @@ import { logEvent } from "./logEvent";
  */
 export const sendEmail = async (to: string, type: "welcome" | "transaction" | "transfer", payload: any): Promise<void> => {
   try {
-    // 📌 Mapear la ruta correcta según el tipo de email
     let emailRoute = "";
     switch (type) {
       case "welcome":
-        emailRoute = "/send-welcome";  // ✅ Asegurar que coincide con `mail.routes.ts`
+        emailRoute = "/send-welcome";
         break;
       case "transaction":
-        emailRoute = "/send-transaction";  // ✅ Asegurar que coincide con `mail.routes.ts`
+        emailRoute = "/send-transaction";
         break;
       case "transfer":
-        emailRoute = "/send-transfer";  // ✅ Asegurar que coincide con `mail.routes.ts`
+        emailRoute = "/send-transfer";
         break;
       default:
         throw new Error(`Tipo de email inválido: ${type}`);
     }
 
-    // 📌 Enviar el email al microservicio de mailing con la ruta correcta
-    const url = `http://localhost:3003${emailRoute}`;
+    const url = `http://localhost:3003/mail/${emailRoute}`;
     await logEvent("email", "INFO", `Enviando email a: ${to} - Tipo: ${type} - URL: ${url}`);
     
     const response = await axios.post(url, { to, payload });

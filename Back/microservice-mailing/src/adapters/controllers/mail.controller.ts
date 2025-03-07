@@ -9,14 +9,17 @@ import {
 
 const mailService = new MailService();
 
-/**
- * 📌 Enviar un correo de bienvenida
- */
-export const sendWelcomeEmail = async (req: Request, res: Response, next: NextFunction) => {
+export const sendWelcomeEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
+    console.log("📩 Recibiendo solicitud para enviar correo de bienvenida...");
+    console.log("📨 Datos recibidos:", req.body);
+
     const { to, payload } = req.body;
+
     if (!to || !payload) {
-      throw new MissingEmailDataError("Se requiere 'to' y 'payload' para enviar un correo.");
+      console.error("❌ Falta el email o el payload.");
+      res.status(400).json({ message: "Se requiere 'to' y 'payload' para enviar un correo." });
+      return;
     }
 
     await logEvent("mailing", "INFO", `Intentando enviar correo de bienvenida a ${to}`);
@@ -24,16 +27,21 @@ export const sendWelcomeEmail = async (req: Request, res: Response, next: NextFu
     const subject = "Bienvenido";
     const template = "welcome";
 
+    console.log("📤 Enviando correo a", to);
     const emailResponse = await sendEmail(to, subject, template, payload);
-    if (!emailResponse || emailResponse.rejected.length > 0) {
-      throw new EmailNotSentError(`No se pudo enviar el correo a ${to}`);
+
+    if (!emailResponse || emailResponse.rejected?.length > 0) {
+      console.error("❌ Error: El servidor de correo rechazó el mensaje", emailResponse);
+      res.status(500).json({ message: `No se pudo enviar el correo a ${to}` });
+      return;
     }
 
-    await mailService.saveMail(to, subject, template, payload);
+    console.log("✅ Correo enviado correctamente:", emailResponse);
     await logEvent("mailing", "INFO", `Correo de bienvenida enviado a ${to}`);
 
-    res.status(200).json({ message: "Correo de bienvenida enviado", response: emailResponse });
+    res.status(200).json({ message: "Correo enviado", response: emailResponse });
   } catch (error) {
+    console.error("❌ Error en sendWelcomeEmail:", error);
     next(error);
   }
 };

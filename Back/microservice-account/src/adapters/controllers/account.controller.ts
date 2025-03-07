@@ -16,9 +16,9 @@ export class AccountController {
   static async createAccount(req: Request, res: Response): Promise<void> {
     await logEvent("account", "INFO", "Intentando crear una cuenta.");
     try {
-      const { user_id, account_type, currency, initial_balance } = req.body;
+      const { user_id, initial_balance } = req.body;
 
-      if (!user_id || !account_type || !currency) {
+      if (!user_id) {
         await logEvent("account", "WARNING", "Faltan datos obligatorios en la creación de la cuenta.");
         throw new MissingFieldsError("user_id, account_type y currency son obligatorios.");
       }
@@ -28,7 +28,7 @@ export class AccountController {
         throw new UnauthorizedActionError("El saldo inicial no puede ser negativo.");
       }
 
-      const account = await createAccountUseCase.execute(user_id, { account_type, currency, initial_balance });
+      const account = await createAccountUseCase.execute(user_id, {  initial_balance });
 
       await logEvent("account", "INFO", `Cuenta creada con éxito para user_id: ${user_id}`);
       res.status(201).json(account);

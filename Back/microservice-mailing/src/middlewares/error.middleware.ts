@@ -8,6 +8,11 @@ import {
 } from "../exceptions/exception";
 
 export const errorHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
+  if (res.headersSent) {
+    console.log("⚠ El error handler fue llamado después de enviar una respuesta. Ignorando...");
+    return next(err);
+  }
+
   let statusCode = 500;
   let errorMessage = "Error interno del servidor";
 
