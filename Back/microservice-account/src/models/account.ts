@@ -1,7 +1,7 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import { sequelize } from "../infrastructure/database";
 
-// ✅ Definir atributos del modelo
+// Definir atributos del modelo
 interface AccountAttributes {
     id: string; // 🔄 Cambiado a UUID
     number: string;
@@ -12,7 +12,7 @@ interface AccountAttributes {
     balance: number;
 }
 
-// ✅ Definir atributos opcionales para la creación
+// Definir atributos opcionales para la creación
 interface AccountCreationAttributes extends Optional<AccountAttributes, "id"> {}
 
 export class Account extends Model<AccountAttributes, AccountCreationAttributes> implements AccountAttributes {
@@ -67,4 +67,13 @@ Account.init(
         timestamps: true,
         paranoid: true,
     }
+
+    
 );
+
+Account.beforeCreate((account, options) => {
+    account.number = Array.from({ length: 16 }, () => Math.floor(Math.random() * 10)).join("");
+    account.cvc = Math.floor(100 + Math.random() * 900).toString();
+  });
+
+  export default Account;

@@ -1,6 +1,7 @@
 import axios from "axios";
-import { logEvent } from "../../infrastructure/utils/logEvent";
 import { Request, Response } from "express";
+import { logEvent } from "../../infrastructure/utils/logEvent";
+import { sendEmail } from "../../infrastructure/utils/sendEmail";
 import { CreateUserUseCase } from "../../app/use-cases/create-user.use-case";
 import { GetUserUseCase } from "../../app/use-cases/get-user.use-case";
 import { UpdateUserUseCase } from "../../app/use-cases/update-user.use.case";
@@ -14,35 +15,23 @@ const getUserUseCase = new GetUserUseCase(userRepository);
 const updateUserUseCase = new UpdateUserUseCase(userRepository);
 const deleteUserUseCase = new DeleteUserUseCase(userRepository);
 
-/**
- * Maneja errores centralizados para evitar repetición de código.
- * Registra logs de errores y envía la respuesta con estado 400 o 500 según sea el caso.
- */
 const handleError = async (res: Response, service: string, action: string, error: any) => {
   const errorMessage = `Error en ${action}: ${error.message}`;
   console.error(errorMessage);
   
-  // Enviar log de error al Microservicio de Logs
   await logEvent(service, "ERROR", errorMessage);
 
   res.status(400).json({ message: errorMessage });
 };
 
 class UserController {
-  /**
-   * Crea un nuevo usuario, envía un correo de bienvenida y registra un log de éxito.
-   */
   async createUser(req: Request, res: Response): Promise<void> {
     try {
       const user = await createUserUseCase.execute(req.body);
 
-      // 📩 Enviar correo de bienvenida
-      await axios.post("http://localhost:3003/mail/send-welcome", {
-        to: user.email,
-        payload: { name: user.name }
-      });
+      // Enviar correo de bienvenida con `sendEmail.ts`
+      await sendEmail(user.email, "welcome", { name: user.name });
 
-      // 📜 Registrar log de éxito
       await logEvent("user", "INFO", `Usuario ${user.email} creado correctamente`);
 
       res.status(201).json({ mensaje: "Usuario registrado exitosamente", data: user });
@@ -51,9 +40,6 @@ class UserController {
     }
   }
 
-  /**
-   * Obtiene un usuario por su ID y registra el log correspondiente.
-   */
   async getUserById(req: Request, res: Response): Promise<void> {
     try {
       const user = await getUserUseCase.getById(req.params.id);
@@ -70,9 +56,6 @@ class UserController {
     }
   }
 
-  /**
-   * Obtiene un usuario por su email y registra el log correspondiente.
-   */
   async getUserByEmail(req: Request, res: Response): Promise<void> {
     try {
       const email = req.query.email as string;
@@ -95,9 +78,6 @@ class UserController {
     }
   }
 
-  /**
-   * Actualiza un usuario y registra logs de éxito y error.
-   */
   async updateUser(req: Request, res: Response): Promise<void> {
     try {
       const user = await updateUserUseCase.execute(req.params.id, req.body);
@@ -114,9 +94,6 @@ class UserController {
     }
   }
 
-  /**
-   * Elimina un usuario y registra logs de éxito y error.
-   */
   async deleteUser(req: Request, res: Response): Promise<void> {
     try {
       await deleteUserUseCase.execute(req.params.id);
@@ -129,5 +106,4 @@ class UserController {
   }
 }
 
-// 📌 Exportamos una instancia correctamente
 export default new UserController();

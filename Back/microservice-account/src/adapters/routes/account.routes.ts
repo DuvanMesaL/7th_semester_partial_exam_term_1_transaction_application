@@ -4,8 +4,8 @@ import { AccountController  } from "../controllers/account.controller";
 
 const router = Router();
 
-// 📌 Rutas protegidas con autenticación JWT
-router.post("/", authMiddleware, (req, res) => AccountController.createAccount(req, res));
+// Rutas protegidas con autenticación JWT
+router.post("/", (req, res) => AccountController.createAccount(req, res));
 router.get("/:id", authMiddleware, (req, res) => AccountController.getAccountById(req, res));
 router.get("/user/:userId", authMiddleware, (req, res) => AccountController.getAccountByUserId(req, res));
 

@@ -1,15 +1,21 @@
 import express from "express";
-import dotenv from "dotenv";
-import { connectDB } from "./infrastructure/databae/mongodb";
+import cors from "cors";
 import mailRoutes from "./adapters/routes/mail.routes";
-
-dotenv.config();
-connectDB();
+import { errorHandler } from "./middlewares/error.middleware";
 
 const app = express();
-app.use(express.json());
 
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Registrar rutas
 app.use("/mail", mailRoutes);
 
-const PORT = process.env.PORT || 5003;
-app.listen(PORT, () => console.log(`Mailing Service running on port ${PORT}`));
+// Middleware de manejo de errores
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 3003;
+app.listen(PORT, () => {
+  console.log(`Microservicio de mailing corriendo en el puerto ${PORT}`);
+});

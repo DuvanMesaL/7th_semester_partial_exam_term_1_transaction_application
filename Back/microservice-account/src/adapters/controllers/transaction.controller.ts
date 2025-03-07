@@ -1,4 +1,5 @@
 import axios from "axios";
+import { sendEmail } from "../../infrastructure/utils/sendEmail";
 import { logEvent } from "../../infrastructure/utils/logEvent";
 import { Request, Response } from "express";
 import { CreateTransactionUseCase } from "../../app/use-cases/transaction/create-transaction.use-case";
@@ -13,7 +14,6 @@ const getTransactionUseCase = new GetTransactionUseCase(transactionRepository);
 
 export class TransactionController {
   static async createTransaction(req: Request, res: Response): Promise<void> {
-    await logEvent("transaction", "INFO", "Intentando procesar una transacción.");
     try {
       const { account_id, type, amount } = req.body;
       const authToken = req.headers.authorization;
@@ -55,14 +55,11 @@ export class TransactionController {
       const transaction = await createTransactionUseCase.execute(account_id, req.body);
       await logEvent("transaction", "INFO", `Transacción creada con éxito: ID ${transaction.id}, Tipo ${type}`);
 
-      await axios.post("http://localhost:3003/mail/send-transaction", {
-        to: userEmail,
-        payload: {
-          name: userResponse.data.name,
-          amount: transaction.amount,
-          type: transaction.type,
-          date: transaction.date.toISOString()
-        }
+      await sendEmail(userEmail, "transaction", {
+        name: userResponse.data.name,
+        amount: transaction.amount,
+        type: transaction.type,
+        date: transaction.date.toISOString(),
       });
 
       res.status(201).json({ message: "Transacción realizada", data: transaction });
@@ -73,7 +70,6 @@ export class TransactionController {
   }
 
   static async getTransactionById(req: Request, res: Response): Promise<void> {
-    await logEvent("transaction", "INFO", `Intentando obtener transacción con ID: ${req.params.id}`);
     try {
       const transaction = await getTransactionUseCase.getById(req.params.id);
 
@@ -92,7 +88,6 @@ export class TransactionController {
   }
 
   static async getTransactionsByAccountId(req: Request, res: Response): Promise<void> {
-    await logEvent("transaction", "INFO", `Intentando obtener transacciones para la cuenta: ${req.params.accountId}`);
     try {
       const transactions = await getTransactionUseCase.getByAccountId(req.params.accountId);
 
