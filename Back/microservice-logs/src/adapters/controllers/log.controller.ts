@@ -17,7 +17,18 @@ export class LogController {
 
   static async getAllLogs(req: Request, res: Response): Promise<void> {
     try {
-      const logs = await logService.getAllLogs();
+      const { service, level } = req.query;
+      const filters: any = {};
+
+      if (service) {
+        filters.service = service;
+      }
+
+      if (level) {
+        filters.level = level;
+      }
+
+      const logs = await logService.getAllLogs(filters);
       res.status(200).json(logs);
     } catch (error: any) {
       res.status(500).json({ message: "Error obteniendo logs", error: error.message });

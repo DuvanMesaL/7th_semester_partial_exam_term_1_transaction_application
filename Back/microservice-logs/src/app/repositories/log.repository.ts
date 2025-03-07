@@ -5,8 +5,17 @@ export class LogRepository {
     const log = new Log(logData);
     return await log.save();
   }
+  async getAllLogs(filters?: { service?: string; level?: string }): Promise<ILog[]> {
+    const query: any = {};
 
-  async getAllLogs(): Promise<ILog[]> {
-    return await Log.find().sort({ timestamp: -1 });
+    if (filters?.service) {
+      query.service = filters.service;
+    }
+
+    if (filters?.level) {
+      query.level = filters.level;
+    }
+
+    return await Log.find(query).sort({ createdAt: -1 });
   }
 }

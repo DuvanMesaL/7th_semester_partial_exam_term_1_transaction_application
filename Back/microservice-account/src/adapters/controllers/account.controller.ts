@@ -18,19 +18,16 @@ export class AccountController {
     try {
       const { user_id, account_type, currency, initial_balance } = req.body;
 
-      // 📌 Validar que los campos obligatorios estén presentes
       if (!user_id || !account_type || !currency) {
         await logEvent("account", "WARNING", "Faltan datos obligatorios en la creación de la cuenta.");
         throw new MissingFieldsError("user_id, account_type y currency son obligatorios.");
       }
 
-      // 📌 Validar que el saldo inicial no sea negativo
       if (initial_balance !== undefined && initial_balance < 0) {
         await logEvent("account", "WARNING", "Intento de creación con saldo inicial negativo.");
         throw new UnauthorizedActionError("El saldo inicial no puede ser negativo.");
       }
 
-      // 📌 Crear la cuenta
       const account = await createAccountUseCase.execute(user_id, { account_type, currency, initial_balance });
 
       await logEvent("account", "INFO", `Cuenta creada con éxito para user_id: ${user_id}`);

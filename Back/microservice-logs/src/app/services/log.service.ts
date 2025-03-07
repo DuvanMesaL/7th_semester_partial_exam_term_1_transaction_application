@@ -9,7 +9,7 @@ export class LogService {
     return await this.logRepository.createLog({ service, level: uppercaseLevel, message, data });
   }
 
-  async getAllLogs(): Promise<ILog[]> {
-    return await this.logRepository.getAllLogs();
+  async getAllLogs(filters?: { service?: string; level?: string }) {
+    return await this.logRepository.getAllLogs(filters);
   }
 }
