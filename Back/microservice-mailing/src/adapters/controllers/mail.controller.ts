@@ -32,6 +32,7 @@ export const sendWelcomeEmail = async (req: Request, res: Response, next: NextFu
       return;
     }
 
+    await mailService.saveMail(to, subject, template, payload); // ✅ Asegúrate de que esta línea esté presente
     await logEvent("mailing", "INFO", `Correo de bienvenida enviado a ${to}`);
 
     res.status(200).json({ message: "Correo enviado", response: emailResponse });
@@ -40,6 +41,7 @@ export const sendWelcomeEmail = async (req: Request, res: Response, next: NextFu
     next(error);
   }
 };
+
 
 export const sendTransactionEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -66,7 +68,6 @@ export const sendTransactionEmail = async (req: Request, res: Response, next: Ne
     next(error);
   }
 };
-
 
 export const sendTransferEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
