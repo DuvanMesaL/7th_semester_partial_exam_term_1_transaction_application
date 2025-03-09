@@ -23,18 +23,18 @@ const user_routes_1 = __importDefault(require("../adapters/user.routes"));
 const errorHandler_1 = require("../middlewares/errorHandler");
 const app = (0, express_1.default)();
 exports.app = app;
-// Middlewares de seguridad y optimización
 app.use(express_1.default.json());
+
 app.use((0, cors_1.default)());
 app.use((0, helmet_1.default)());
 app.use((0, compression_1.default)());
-// Rutas
+
 app.use("/user", user_routes_1.default);
-// Middleware de manejo de errores (debe estar después de las rutas)
+
 app.use((err, req, res, next) => {
     (0, errorHandler_1.errorHandler)(err, req, res, next);
 });
-// Inicializar la base de datos antes de iniciar el servidor
+
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield (0, database_1.initializeDatabase)();
@@ -46,7 +46,7 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (error) {
         console.error("❌ Error starting the server:", error);
-        process.exit(1); // Forzar salida en caso de error crítico
+        process.exit(1);
     }
 });
 const server = startServer();

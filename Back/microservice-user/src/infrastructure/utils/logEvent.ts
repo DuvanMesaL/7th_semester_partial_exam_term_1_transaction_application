@@ -6,12 +6,11 @@ const validLevels = ["INFO", "WARNING", "ERROR"];
 
 export const logEvent = async (service: string, type: string, content: string) => {
     try {
-        // Si el "type" no es válido, lo cambiamos a INFO
         const level = validLevels.includes(type) ? type : "INFO";
 
         await axios.post(LOGS_SERVICE_URL, {
             service,
-            level,  // Usamos el nivel corregido
+            level,
             message: content,
             data: {}
         });

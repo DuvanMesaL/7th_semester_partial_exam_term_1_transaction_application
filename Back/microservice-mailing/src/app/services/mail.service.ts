@@ -9,9 +9,6 @@ export class MailService {
   }
 
   async saveMail(to: string, subject: string, template: string, payload: object) {
-    console.log("📩 Intentando guardar en MongoDB...");
-    console.log("📨 Datos a guardar:", { to, subject, template, payload });
-
     const mail: IMail = { to, subject, template, payload };
     const savedMail = await this.mailRepository.saveMail(mail);
 

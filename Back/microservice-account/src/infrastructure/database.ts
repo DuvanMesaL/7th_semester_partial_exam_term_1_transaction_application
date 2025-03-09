@@ -15,11 +15,10 @@ export const sequelize = new Sequelize(
     }
 );
 
-// Importar modelos
 import "../models/account";
 import "../models/transaction";
 
-export const initializeDatabase = async () => { // 📌 Cambiar nombre para que coincida con `server.ts`
+export const initializeDatabase = async () => {
     try {
         await sequelize.authenticate();
         console.log("✅ Conectado a la base de datos de cuentas.");

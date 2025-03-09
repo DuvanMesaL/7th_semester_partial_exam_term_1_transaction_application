@@ -1,6 +1,5 @@
 import { Router } from "express";
 import UserController from "../controllers/user.controller";
-import { AuthController } from "../controllers/auth.controller";
 import { authMiddleware } from "../../middlewares/auth.middleware";
 import { validateRequest } from "../../middlewares/validateRequest";
 import {
@@ -14,7 +13,6 @@ const router = Router();
 
 router.post("/", validateCreateUser, validateRequest, UserController.createUser);
 router.get("/", authMiddleware, UserController.getAllUsers);
-router.post("/login", AuthController.login);
 
 router.get("/:id", authMiddleware, validateGetUserById, validateRequest, UserController.getUserById);
 router.put("/:id", authMiddleware, validateUpdateUser, validateRequest, UserController.updateUser);

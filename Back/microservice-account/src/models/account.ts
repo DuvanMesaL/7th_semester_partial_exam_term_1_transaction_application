@@ -1,18 +1,17 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import { sequelize } from "../infrastructure/database";
+import dayjs from "dayjs";
 
-// Definir atributos del modelo
 interface AccountAttributes {
-    id: string; // 🔄 Cambiado a UUID
+    id: string;
     number: string;
     placeholder: string;
     cvc: string;
-    due_date: Date;
+    due_date: string;
     user_id: string;
     balance: number;
 }
 
-// Definir atributos opcionales para la creación
 interface AccountCreationAttributes extends Optional<AccountAttributes, "id"> {}
 
 export class Account extends Model<AccountAttributes, AccountCreationAttributes> implements AccountAttributes {
@@ -20,7 +19,7 @@ export class Account extends Model<AccountAttributes, AccountCreationAttributes>
     public number!: string;
     public placeholder!: string;
     public cvc!: string;
-    public due_date!: Date;
+    public due_date!: string;
     public user_id!: string;
     public balance!: number;
 }
@@ -29,7 +28,7 @@ Account.init(
     {
         id: {
             type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4, // ✅ Generación automática
+            defaultValue: DataTypes.UUIDV4,
             primaryKey: true,
         },
         number: {
@@ -46,7 +45,7 @@ Account.init(
             allowNull: false,
         },
         due_date: {
-            type: DataTypes.DATE,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         user_id: {
@@ -74,6 +73,8 @@ Account.init(
 Account.beforeCreate((account, options) => {
     account.number = Array.from({ length: 16 }, () => Math.floor(Math.random() * 10)).join("");
     account.cvc = Math.floor(100 + Math.random() * 900).toString();
+    const expirationDate = dayjs().add(4, "year");
+    account.due_date = expirationDate.format("MM/YY");
   });
 
   export default Account;

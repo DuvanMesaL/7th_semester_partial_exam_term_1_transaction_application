@@ -23,7 +23,6 @@ beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
 }));
 beforeEach(() => __awaiter(void 0, void 0, void 0, function* () {
     yield database_1.AppDataSource.getRepository(user_entity_1.User).clear();
-    // ✅ Crear un usuario de prueba con los nuevos campos
     const response = yield (0, supertest_1.default)(server_1.app)
         .post("/user")
         .send({

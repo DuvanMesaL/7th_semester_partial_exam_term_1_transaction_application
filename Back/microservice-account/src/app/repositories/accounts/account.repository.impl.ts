@@ -1,4 +1,5 @@
 import { Op } from "sequelize";
+import dayjs from "dayjs";
 import { Account } from "../../../models/account";
 import { AccountRepository } from "./account.repository";
 
@@ -8,8 +9,8 @@ export class AccountRepositoryImpl implements AccountRepository {
       user_id: userId,
       number: accountData.number ?? "",
       placeholder: accountData.placeholder ?? "",
-      cvc: accountData.cvc ?? "",
-      due_date: accountData.due_date ?? new Date(),
+      cvc: accountData.cvc || "",
+      due_date: accountData.due_date ?? dayjs().add(4, "year").format("MM/YY"),
       balance: accountData.balance ?? 0,
     });
   }
@@ -22,13 +23,18 @@ export class AccountRepositoryImpl implements AccountRepository {
     return await Account.findOne({ where: { user_id: userId } });
   }
 
+  async getAccountByNumber(accountNumber: string): Promise<Account | null> {
+    const account = await Account.findOne({ where: { number: accountNumber.toString().trim() } });
+  
+    return account;
+  }
+  
   async updateAccount(accountId: string, updatedData: Partial<Account>): Promise<Account | null> {
     const account = await Account.findByPk(accountId);
     if (!account) {
       return null;
     }
   
-    // 📌 Asegurar que el balance se actualiza correctamente
     await account.update(updatedData);
     await account.save();
   
@@ -49,8 +55,6 @@ export class AccountRepositoryImpl implements AccountRepository {
     const account = await Account.findByPk(accountId);
     if (!account) return;
     
-    await account.destroy(); // Soft delete activado
+    await account.destroy();
   }
-
-  
 }

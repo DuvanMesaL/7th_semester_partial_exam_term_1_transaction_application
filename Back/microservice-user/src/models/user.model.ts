@@ -1,7 +1,7 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import sequelize from "../infrastructure/database";
+import bcrypt from "bcrypt";
 
-// 🛠 Definir la estructura base del usuario sin Sequelize
 interface UserAttributes {
   id: string;
   name: string;
@@ -13,16 +13,13 @@ interface UserAttributes {
   password: string;
   documentType: string;
   documentNumber: string;
+  refreshToken?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date | null;
 }
 
-// 🛠 Para creación de usuario (sin `id`, `timestamps`)
 interface UserCreationAttributes extends Optional<UserAttributes, "id" | "createdAt" | "updatedAt" | "deletedAt"> {}
-
-// 🛠 Tipo para devolver solo datos planos (sin métodos Sequelize)
-type UserPlainAttributes = Omit<User, keyof Model>;
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: string;
@@ -35,6 +32,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public password!: string;
   public documentType!: string;
   public documentNumber!: string;
+  public refreshToken?: string | null;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
   public readonly deletedAt!: Date | null;
@@ -42,11 +40,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
 
 User.init(
   {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
-    },
+    id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     name: { type: DataTypes.STRING, allowNull: false },
     lastname: { type: DataTypes.STRING, allowNull: false },
     age: { type: DataTypes.INTEGER, allowNull: false },
@@ -56,6 +50,7 @@ User.init(
     password: { type: DataTypes.STRING, allowNull: false },
     documentType: { type: DataTypes.STRING, allowNull: false },
     documentNumber: { type: DataTypes.STRING, allowNull: false, unique: true },
+    refreshToken: { type: DataTypes.STRING, allowNull: true },
     createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
     updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
     deletedAt: { type: DataTypes.DATE },
@@ -65,9 +60,9 @@ User.init(
     modelName: "User",
     tableName: "users",
     timestamps: true,
-    paranoid: true, // Soft delete
+    paranoid: true,
   }
 );
 
 export default User;
-export { UserCreationAttributes, UserPlainAttributes };
+export { UserCreationAttributes};

@@ -4,8 +4,8 @@ module.exports = {
       id: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.UUID,  // 🔄 Ahora es UUID
-        defaultValue: Sequelize.UUIDV4,  // 🔄 Se generará automáticamente
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
       },
       name: { type: Sequelize.STRING, allowNull: false },
       lastname: { type: Sequelize.STRING, allowNull: false },
@@ -16,6 +16,7 @@ module.exports = {
       password: { type: Sequelize.STRING, allowNull: false },
       documentType: { type: Sequelize.STRING, allowNull: false },
       documentNumber: { type: Sequelize.STRING, allowNull: false, unique: true },
+      refreshToken: { type: Sequelize.STRING, allowNull: true },
       createdAt: { type: Sequelize.DATE, defaultValue: Sequelize.literal("NOW()"), allowNull: false },
       updatedAt: { type: Sequelize.DATE, defaultValue: Sequelize.literal("NOW()"), allowNull: false },
       deletedAt: { type: Sequelize.DATE, allowNull: true },

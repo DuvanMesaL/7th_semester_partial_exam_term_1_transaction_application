@@ -16,33 +16,34 @@ export class AccountController {
   static async createAccount(req: Request, res: Response): Promise<void> {
     await logEvent("account", "INFO", "Intentando crear una cuenta.");
     try {
-      const { user_id, initial_balance } = req.body;
-
-      if (!user_id) {
+      const { user_id, placeholder, initial_balance } = req.body; 
+  
+      if (!user_id || !placeholder) {
         await logEvent("account", "WARNING", "Faltan datos obligatorios en la creación de la cuenta.");
-        throw new MissingFieldsError("user_id, account_type y currency son obligatorios.");
+        throw new MissingFieldsError("user_id y placeholder son obligatorios.");
       }
-
+  
       if (initial_balance !== undefined && initial_balance < 0) {
         await logEvent("account", "WARNING", "Intento de creación con saldo inicial negativo.");
         throw new UnauthorizedActionError("El saldo inicial no puede ser negativo.");
       }
-
-      const account = await createAccountUseCase.execute(user_id, {  initial_balance });
-
+  
+      const account = await createAccountUseCase.execute(user_id, { placeholder, initial_balance });
+  
       await logEvent("account", "INFO", `Cuenta creada con éxito para user_id: ${user_id}`);
       res.status(201).json(account);
     } catch (error: any) {
+      console.error("❌ Error en createAccount:", error);
       await logEvent("account", "ERROR", `Error al crear cuenta: ${error.message}`);
-
+   
       if (error instanceof MissingFieldsError || error instanceof UnauthorizedActionError) {
         res.status(400).json({ message: error.message });
       } else {
-        res.status(500).json({ message: "Error interno del servidor" });
+        res.status(500).json({ message: "Error interno del servidor", error: error.message });
       }
     }
   }
-
+  
   static async getAccountById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
@@ -77,6 +78,25 @@ export class AccountController {
       res.json(account);
     } catch (error: any) {
       await logEvent("account", "ERROR", `Error al obtener cuenta de usuario: ${error.message}`);
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  static async getAccountByNumber(req: Request, res: Response): Promise<void> { 
+    try {
+      const { number } = req.params;
+      const account = await getAccountUseCase.getByNumber(number);
+
+      if (!account) {
+        await logEvent("account", "WARNING", `Cuenta no encontrada con número: ${number}`);
+        res.status(404).json({ message: "Cuenta no encontrada." });
+        return;
+      }
+
+      await logEvent("account", "INFO", `Cuenta con número ${number} consultada correctamente.`);
+      res.json(account);
+    } catch (error: any) {
+      await logEvent("account", "ERROR", `Error al obtener cuenta por número: ${error.message}`);
       res.status(400).json({ message: error.message });
     }
   }

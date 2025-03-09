@@ -1,4 +1,5 @@
 import { Transaction } from "../../../models/transaction";
+import { Account } from "../../../models/account";
 import { TransactionRepository } from "./transaction.repository";
 
 export class TransactionRepositoryImpl implements TransactionRepository {
@@ -11,7 +12,7 @@ export class TransactionRepositoryImpl implements TransactionRepository {
       updatedAt: new Date(),
     });
   }
-
+  
   async getTransactionsByAccount(accountId: string): Promise<Transaction[]> {
     return await Transaction.findAll({ where: { account_id: accountId } });
   }

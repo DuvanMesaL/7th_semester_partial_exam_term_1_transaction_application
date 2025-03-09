@@ -4,29 +4,27 @@ import helmet from "helmet";
 import compression from "compression";
 import { initializeDatabase } from "../infrastructure/database"; 
 import userRoutes from "../adapters/routes/user.routes";
+import authRoutes from "../adapters/routes/auth.routes";
 import errorHandler from "../middlewares/errorHandler";
 
 const app = express();
 
-// Middlewares
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
 app.use(compression());
 
-// Rutas
 app.get("/", (req, res) => {
   res.json({ message: "User Microservice is running" });
 });
 
 app.use("/user", userRoutes);
+app.use("/auth", authRoutes);
 
-// Middleware de errores
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   errorHandler(err, req, res, next);
 });
 
-// Iniciar el servidor
 const startServer = async () => {
   try {
     await initializeDatabase();

@@ -6,7 +6,7 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4, // ✅ Generación automática de UUID
+        defaultValue: Sequelize.UUIDV4,
       },
       number: {
         type: Sequelize.STRING,
@@ -22,13 +22,13 @@ module.exports = {
         allowNull: false
       },
       due_date: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false
       },
       user_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        unique: true // ✅ Solo un usuario por cuenta
+        unique: true
       },
       balance: {
         type: Sequelize.DECIMAL(12, 2),
@@ -45,7 +45,7 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('NOW()')
       },
-      deletedAt: { // ✅ Para Soft Delete
+      deletedAt: {
         type: Sequelize.DATE,
         allowNull: true
       }

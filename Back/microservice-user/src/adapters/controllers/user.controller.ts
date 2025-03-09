@@ -32,6 +32,23 @@ class UserController {
 
       await sendEmail(user.email, "welcome", { name: user.name });
 
+      try {
+        await axios.post("http://localhost:3002/account", {
+          user_id: user.id,
+          placeholder: user.name && user.lastname ? `${user.name} ${user.lastname}` : "Sin nombre",
+        });
+
+        await logEvent("account", "INFO", `Cuenta creada correctamente para ${user.email}`);
+      } catch (accountError) {
+        const errorMessage = accountError instanceof Error
+          ? accountError.message
+          : "Error desconocido al crear la cuenta.";
+
+        console.error("Error creando la cuenta:", errorMessage);
+
+        await logEvent("account", "ERROR", `Error creando la cuenta para ${user.email}: ${errorMessage}`);
+      }
+      
       await logEvent("user", "INFO", `Usuario ${user.email} creado correctamente`);
 
       res.status(201).json({ mensaje: "Usuario registrado exitosamente", data: user });
@@ -58,9 +75,21 @@ class UserController {
         res.status(404).json({ message: "Usuario no encontrado." });
         return;
       }
-      
+  
+      const userDTO = {
+        id: user.id,
+        name: user.name,
+        lastname: user.lastname,
+        age: user.age,
+        email: user.email,
+        phone: user.phone,
+        gender: user.gender,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
+  
       await logEvent("user", "INFO", `Usuario ${user.email} consultado correctamente`);
-      res.json(user);
+      res.json(userDTO);
     } catch (error: any) {
       await handleError(res, "user", "obtener usuario por ID", error);
     }

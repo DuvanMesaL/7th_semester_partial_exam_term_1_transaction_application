@@ -4,7 +4,7 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     static associate(models) {
-      // Relación: Cada Transaction pertenece a un Account
+
       Transaction.belongsTo(models.Account, {
         foreignKey: "account_id",
         as: "account",

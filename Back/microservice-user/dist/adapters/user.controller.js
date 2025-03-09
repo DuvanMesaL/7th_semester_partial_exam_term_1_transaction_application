@@ -28,10 +28,10 @@ const getAllUsersUseCase = new get_all_user_use_case_1.GetAllUsersUseCase(userRe
 const getAllUsersController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield getAllUsersUseCase.execute();
-        res.status(200).json(users); // ✅ Devuelve todos los usuarios en formato JSON
+        res.status(200).json(users);
     }
     catch (error) {
-        next(error); // ✅ Manejo correcto de errores
+        next(error);
     }
 });
 exports.getAllUsersController = getAllUsersController;

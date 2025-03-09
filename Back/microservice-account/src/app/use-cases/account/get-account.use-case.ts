@@ -16,4 +16,12 @@ export class GetAccountUseCase {
   async getByUserId(userId: string): Promise<Account | null> {
     return await this.accountRepository.getAccountByUserId(userId);
   }
+
+  async getByNumber(accountNumber: string): Promise<Account> { 
+    const account = await this.accountRepository.getAccountByNumber(accountNumber);
+    if (!account) {
+      throw new AccountNotFoundError("No se encontró la cuenta con el número proporcionado.");
+    }
+    return account;
+  }
 }

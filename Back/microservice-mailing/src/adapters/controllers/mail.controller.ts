@@ -11,9 +11,6 @@ const mailService = new MailService();
 
 export const sendWelcomeEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    console.log("📩 Recibiendo solicitud para enviar correo de bienvenida...");
-    console.log("📨 Datos recibidos:", req.body);
-
     const { to, payload } = req.body;
 
     if (!to || !payload) {
@@ -27,7 +24,6 @@ export const sendWelcomeEmail = async (req: Request, res: Response, next: NextFu
     const subject = "Bienvenido";
     const template = "welcome";
 
-    console.log("📤 Enviando correo a", to);
     const emailResponse = await sendEmail(to, subject, template, payload);
 
     if (!emailResponse || emailResponse.rejected?.length > 0) {
@@ -36,7 +32,6 @@ export const sendWelcomeEmail = async (req: Request, res: Response, next: NextFu
       return;
     }
 
-    console.log("✅ Correo enviado correctamente:", emailResponse);
     await logEvent("mailing", "INFO", `Correo de bienvenida enviado a ${to}`);
 
     res.status(200).json({ message: "Correo enviado", response: emailResponse });
@@ -72,9 +67,7 @@ export const sendTransactionEmail = async (req: Request, res: Response, next: Ne
   }
 };
 
-/**
- * 📌 Enviar un correo de confirmación de transferencia
- */
+
 export const sendTransferEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { senderEmail, receiverEmail, payload } = req.body;

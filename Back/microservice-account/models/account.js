@@ -4,7 +4,7 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Account extends Model {
     static associate(models) {
-      // Relación: Un Account puede tener muchas Transactions
+      
       Account.hasMany(models.Transaction, {
         foreignKey: "account_id",
         as: "transactions",
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       number: DataTypes.STRING,
       placeholder: DataTypes.STRING,
       cvc: DataTypes.STRING,
-      due_date: DataTypes.DATE,
+      due_date: DataTypes.STRING,
       user_id: DataTypes.UUID,
       balance: DataTypes.DECIMAL,
     },

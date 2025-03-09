@@ -6,10 +6,10 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4 // ✅ Generación automática de UUID
+        defaultValue: Sequelize.UUIDV4
       },
       account_id: {
-        type: Sequelize.UUID, // ✅ Cambiado a UUID para coincidir con accounts
+        type: Sequelize.UUID, 
         allowNull: false,
         references: {
           model: 'accounts',
@@ -18,7 +18,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       type: {
-        type: Sequelize.ENUM("income", "outcome"), // ✅ Se usa ENUM en lugar de STRING
+        type: Sequelize.ENUM("income", "outcome"),
         allowNull: false
       },
       amount: {

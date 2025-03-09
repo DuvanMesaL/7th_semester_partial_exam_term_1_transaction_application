@@ -13,6 +13,6 @@ export const validateRequest = (schema: ObjectSchema) => {
             return;
         }
 
-        next(); // ✅ Llamamos a next() en caso de éxito para continuar con la ejecución
+        next();
     };
 };

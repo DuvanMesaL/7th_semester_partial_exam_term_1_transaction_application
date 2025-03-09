@@ -15,14 +15,6 @@ export const sendEmail = async (
   payload: any
 ): Promise<void> => {
   try {
-    console.log("📤 Enviando email con los siguientes datos:");
-    console.log({
-      senderEmail,
-      receiverEmail,
-      type,
-      payload,
-    });
-
     let emailRoute = "";
 
     switch (type) {
