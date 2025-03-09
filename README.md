@@ -172,9 +172,35 @@ After starting all services, navigate to `http://localhost:3000` in your browser
 
 ## 📸 Screenshots
 
-*(Add screenshots here)*
+### ENJOY THE APP
+
+#### Login
+![login](https://github.com/user-attachments/assets/b18b2a87-c011-4238-8f8b-8491088bef5f)
+![Login](https://github.com/user-attachments/assets/f39f0b34-5278-4d89-835e-e439c86e2c26)
+
+#### Register
+![register](https://github.com/user-attachments/assets/ffbf3a0a-9d1f-4728-bbea-65d57266c1b6)
+![Register](https://github.com/user-attachments/assets/50f5acc6-3603-489d-b5e4-f3e22d3652ab)
+
+#### Dashboard
+![Dashboard](https://github.com/user-attachments/assets/ba6132a6-c98b-4926-b890-8f2f3884ed91)
+![DashBoard-1](https://github.com/user-attachments/assets/f1bd181c-ac7f-4c95-8d8f-c9c654fe2226)
+![DashBoard-2](https://github.com/user-attachments/assets/de796d41-11df-45c4-8c24-d466edc55af4)
+
+#### Account
+![Account](https://github.com/user-attachments/assets/6f409a46-6229-469a-a4d7-a4868e3727a0)
+![Account](https://github.com/user-attachments/assets/62ce8cf0-1839-4ae7-a283-d11bbeb4cb3d)
+
+#### Transaction
+![Transaction](https://github.com/user-attachments/assets/f29028b5-99f0-4803-80a6-7d00ae767ed0)
+![Transaction](https://github.com/user-attachments/assets/5a3f91f5-e4cb-4e52-881c-1d835c8c09c8)
+
+#### Transfer
+![Transfer](https://github.com/user-attachments/assets/bce12fc9-b8ea-47ea-9945-b161bfcb7964)
+![Transfer](https://github.com/user-attachments/assets/de2ce68b-0115-45e4-9899-65bf7a91de50)
 
 ---
+
 
 ## ⚠️ Troubleshooting
 
