@@ -261,6 +261,3 @@ Please make sure to update tests as appropriate and follow our code of conduct.
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
-
-
-![It](https://github.com/user-attachments/assets/c68f106e-d1d7-4231-b8be-38966a2a098b)
